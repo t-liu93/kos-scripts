@@ -3,10 +3,22 @@
 // However, it is made for a 400kg probe with an AJ10-Mid engine for de-orbiting and satellite engine for final approach.
 // The TWR (local to moon) should be at least 2.2.
 set steeringmanager:maxstoppingtime to 5.
-set steeringmanager:pitchpid:kd to 1.
+set steeringmanager:pitchpid:ki to 1.
+set steeringmanager:pitchpid:kd to 0.5.
+set steeringmanager:yawpid:ki to 1.
 set steeringmanager:yawpid:kd to 1.
+set steeringmanager:rollpid:ki to 1.
 set steeringmanager:rollpid:kd to 1.
+set steeringmanager:pitchts to 5.
+set steeringmanager:yawts to 5.
+set steeringmanager:rollts to 5.
+
 set g_moon to moon:mu / (altitude + body:radius) ^ 2.
+
+set decent_stage to 1.
+set decent_fuel to stage:udmh.
+
+set steering_phase to 0.
 
 set phase to 1.
 
@@ -29,6 +41,7 @@ function kill_horizontal
 {
     print "Phase 1: Kill horizontal speed. ".
     lock steering to (-1) * (vxcl(ship:up:vector, ship:velocity:surface)).
+    set steering_phase to 1.
     // lock steering to (-1) * ship:velocity:surface - ship:up:vector * 80.
     engine_on().
     wait until (altitude - ship:geoposition:terrainheight) < 1000 or ship:groundspeed < 1.5.
@@ -110,6 +123,12 @@ function final_approach
 
 function touch_down
 {
+    when ship:verticalspeed > -0.5 then
+    {
+        print "kill engine".
+        engine_off().
+        return true.
+    }
     print "Phase 3: Touch down. ".
     until get_agl() < 2
     {
@@ -127,7 +146,6 @@ function touch_down
                 set available_acceleration to (ship:availablethrust / ship:mass) - g_moon.
                 set burn_time to (-ship:verticalspeed) / available_acceleration.
                 set burn_distance to (-ship:verticalspeed * burn_time + 0.5 * available_acceleration * burn_time ^ 2).
-                print "Burn dist: " + burn_distance + ", agl: " + get_agl().
             }
             wait 0.1.
         }
@@ -141,6 +159,11 @@ function touch_down
 
 function land
 {
+    engine_off().
+    until stage:number = decent_stage
+    {
+        stage.
+    }
     until phase = 0
     {
         if phase = 1
@@ -163,31 +186,32 @@ function land
     unlock throttle.
 }
 
-when stage:number = 1 and (stage:udmh = 0 or get_agl() < 5000 or phase = 3 or ship:availablethrust = 0) then
+when stage:number = decent_stage and (decent_fuel = 0 or get_agl() < 5000 or phase = 3 or ship:availablethrust = 0) then
 {
     engine_off().
     wait 1.
     stage.
     gear on.
-    set STEERINGMANAGER:MAXSTOPPINGTIME to 1.
+    // set STEERINGMANAGER:MAXSTOPPINGTIME to 1.
+    if phase = 1
+    {
+        engine_on().
+    }
 }
 
-when ship:groundspeed < 0.05 then
+when ship:groundspeed < 0.05 and steering_phase <> 3 then
 {
     print "steering up".
     lock steering to ship:up.
+    set steering_phase to 3.
+    return true.
 }
 
-when ship:groundspeed >= 0.05 and ship:groundspeed < 1 then
+when ship:groundspeed >= 0.05 and ship:groundspeed < 1.5 and steering_phase <> 2 then
 {
     print "steering a bit".
     lock steering to (-1) * ship:velocity:surface - ship:up:vector * 5.
-}
-
-when ship:verticalspeed > -0.5 then
-{
-    print "kill engine".
-    engine_off().
+    set steering_phase to 2.
     return true.
 }
 
