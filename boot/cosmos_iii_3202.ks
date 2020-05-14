@@ -28,6 +28,8 @@ GLOBAL vehicle IS LIST(
 GLOBAL sequence IS LIST(
                     LEXICON("time", -3.5, "type", "stage", "message", "LR-87 ignition"),
                     LEXICON("time", 0, "type", "stage", "message", "LIFTOFF"),
+                    LEXICON("time", 10, "type", "ag"), // should have error message
+                    LEXICON("time", 15, "type", "actiongroup", "groupnumber", 1),
                     LEXICON("time", 200, "type", "jettison", "message", "Payload Fairing jettison", "massLost", 368)
 ).
 GLOBAL controls IS LEXICON(

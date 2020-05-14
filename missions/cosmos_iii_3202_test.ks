@@ -4,4 +4,4 @@ GLOBAL mission IS LEXICON(
                     "apoapsis", 200
 ).
 
-run "0:/pegas.ks.".
+run "0:/pegas/kos/pegas".
