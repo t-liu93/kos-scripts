@@ -1,7 +1,7 @@
 global vehicle IS list(
                     lexicon(
                         "name", "Stage-I",
-                        "massTotal", 356681,
+                        "massTotal", 338448,
                         "massFuel", 214200-6692,
                         "minThrottle", 1.0,
                         "engines", list(lexicon("isp", 290.0, "thrust", 846600*4)),
@@ -12,7 +12,7 @@ global vehicle IS list(
                     ),
                     lexicon(
                         "name", "Stage-II",
-                        "massTotal", 136733,
+                        "massTotal", 117986,
                         "massFuel", 112700-9827,
                         "engines", list(lexicon("isp", 403.0, "thrust", 2*667000)),
                         "staging", lexicon(
@@ -22,21 +22,6 @@ global vehicle IS list(
                                         "waitBeforeIgnition", 1,
                                         "ullage", "srb",
                                         "ullageBurnDuration", 5
-                                        )
-                    ),
-                    lexicon(
-                        "name", "Stage-III",
-                        "massTotal", 20647,
-                        "massFuel", 15270-1404,
-                        "engines", list(lexicon("isp", 433.0, "thrust", 2*67000)),
-                        "staging", lexicon(
-                                        "jettison", true,
-                                        "waitBeforeJettison", 1,
-                                        "ignition", true,
-                                        "waitBeforeIgnition", 1,
-                                        "ullage", "rcs",
-                                        "ullageBurnDuration", 10,
-                                        "postUllageBurn", 10
                                         )
                     )
 ).
@@ -48,11 +33,11 @@ global sequence IS list(
 ).
 global controls IS lexicon(
                     "launchTimeAdvance", 150,
-                    "verticalAscentSpeed", 45,
+                    "verticalAscentSpeed", 48,
                     "pitchOverAngle", 7.5,
                     "upfgActivation", 110
 ).
 set steeringmanager:rollts to 10.
 switch to 0.
 clearScreen.
-print "Loaded boot file: COSMOS-V-54822!".
+print "Loaded boot file: COSMOS-V-5482!".

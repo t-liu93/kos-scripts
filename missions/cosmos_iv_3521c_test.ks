@@ -1,5 +1,5 @@
 GLOBAL mission IS LEXICON(
-                    "payload", 6007,
+                    "payload", 7984,
                     "periapsis", 200,
                     "apoapsis", 200
 ).
